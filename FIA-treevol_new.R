@@ -12,6 +12,9 @@ live_biomass$COUNTYCD<-sprintf("%03d",as.numeric(live_biomass$COUNTYCD))
 live_biomass$FIPS<-paste0(live_biomass$STATECD,live_biomass$COUNTYCD)
 saveRDS(live_biomass, file="live_biomass.rds")
 sum_live_small<-live_biomass%>%filter(sizeClass<=6)%>%group_by(FIPS,YEAR, SPCD, COMMON_NAME, SCIENTIFIC_NAME)%>%summarize_at('BIO_TOTAL',sum)
+ash<-subset(sum_live_small, SCIENTIFIC_NAME=="Fraxinus pennsylvanica")
+boxplot(ash$BIO_TOTAL~ash$YEAR)
+m<-lm(sum_live_small$BIO_TOTAL~sum_live_small$YEAR+sum_live_small$SCIENTIFIC_NAME)
 sum_live_med<-# do the same but with size Class >6 and <=12
 sum_live_large<-# do the same but with size Class >=12 
 live_biomass_total<-rbind(sum_live_small, sum_live_med)
@@ -19,13 +22,6 @@ live_biomass_total<-rbind(live_biomass_total, sum_live_large)
 saveRDS(live_biomass_total, file="live_biomass_total.rds")
 
 
-dead_biomass <-biomass(db=FIA, bySpecies=T, bySizeClass=T, totals=T, treeType="dead",variance=F,grpBy=c(STATECD,COUNTYCD), nCores=4) 
-dead_biomass$STATECD<-sprintf("%02d",as.numeric(dead_biomass$STATECD))
-dead_biomass$COUNTYCD<-sprintf("%03d",as.numeric(dead_biomass$COUNTYCD))
-dead_biomass$FIPS<-paste0(dead_biomass$STATECD,dead_biomass$COUNTYCD)
-saveRDS(dead_biomass, file="dead_biomass.rds")
-
-
-###repeat same size class grouping as above for dead biomass
+###think about how to add columns to the data frame that tell us about when each pest arrived to that county.
 
 
