@@ -10,8 +10,8 @@ live_biomass <-biomass(db=FIA, bySpecies=T, bySizeClass=T, totals=T, treeType="l
 live_biomass$STATECD<-sprintf("%02d",as.numeric(live_biomass$STATECD))
 live_biomass$COUNTYCD<-sprintf("%03d",as.numeric(live_biomass$COUNTYCD))
 live_biomass$FIPS<-paste0(live_biomass$STATECD,live_biomass$COUNTYCD)
-saveRDS(live_biomass, file="live_biomass.rds")
-live_biomass<-readRDS('live_biomass.rds')
+saveRDS(live_biomass, file="output/live_biomass.rds")
+live_biomass<-readRDS('/output/live_biomass.rds')
 sum_live_small<-live_biomass%>%filter(sizeClass<=6)%>%group_by(FIPS,YEAR, SPCD, COMMON_NAME, SCIENTIFIC_NAME)%>%summarize_at('BIO_TOTAL',sum)
 sum_live_med<-live_biomass%>%filter(sizeClass>6 & sizeClass<=12)%>%group_by(FIPS,YEAR, SPCD, COMMON_NAME, SCIENTIFIC_NAME)%>%summarize_at('BIO_TOTAL',sum)# do the same but with size Class >6 and <=12
 sum_live_large<-live_biomass%>%filter(sizeClass>12)%>%group_by(FIPS,YEAR, SPCD, COMMON_NAME, SCIENTIFIC_NAME)%>%summarize_at('BIO_TOTAL',sum)# do the same but with size Class >=12 
